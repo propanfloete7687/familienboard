@@ -1,0 +1,62 @@
+name: TimeTree abholen
+
+on:
+  schedule:
+    - cron: "*/20 * * * *"   # alle 20 Minuten (GitHub startet oft ein paar Minuten später)
+  workflow_dispatch:          # zusätzlich per Knopfdruck unter "Actions"
+  push:
+    branches: [main]          # nach Änderungen am Board sofort neu veröffentlichen
+
+permissions:
+  contents: write
+
+concurrency:
+  group: timetree
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Werkzeuge installieren
+        run: pip install "timetree-exporter>=1.0,<2" "icalendar>=6.1,<8" recurring-ical-events cryptography "bring-api>=1.1,<2"
+
+      - name: Einkaufsliste aus Bring! holen
+        continue-on-error: true   # Fällt Bring! aus, läuft der Kalender trotzdem weiter
+        env:
+          BRING_EMAIL: ${{ secrets.BRING_EMAIL }}
+          BRING_PASSWORD: ${{ secrets.BRING_PASSWORD }}
+          BRING_LIST_NAME: ${{ vars.BRING_LIST_NAME }}
+        run: python scripts/bring_fetch.py bring.json
+
+      - name: Termine aus TimeTree exportieren
+        env:
+          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
+          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
+        run: timetree_exporter -c "${{ vars.TIMETREE_CALENDAR_CODE }}" -o timetree.ics
+
+      - name: Aufbereiten und verschlüsseln
+        env:
+          BOARD_KEY: ${{ secrets.BOARD_KEY }}
+        run: python scripts/prepare.py timetree.ics site/data.enc.json
+
+      - name: Board + Daten veröffentlichen (Branch gh-pages)
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp -r board/. site/
+          touch site/.nojekyll
+          cd site
+          git init -q -b gh-pages
+          git config user.name  "familienboard-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Aktualisierung $(date -u +%FT%TZ)"
+          git push -q --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
