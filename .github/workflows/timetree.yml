@@ -40,7 +40,7 @@ jobs:
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-          CAL_CODE: ${{ vars.TIMETREE_CALENDAR_CODE }}
+          CAL_CODE: ${{ vars.TIMETREE_CALENDAR_CODE || secrets.TIMETREE_CALENDAR_CODE }}
         run: |
           if [ -z "$TIMETREE_EMAIL" ] || [ -z "$TIMETREE_PASSWORD" ]; then echo "::error::Secrets TIMETREE_EMAIL / TIMETREE_PASSWORD fehlen"; exit 1; fi
           if [ -z "$CAL_CODE" ]; then echo "::error::Variable TIMETREE_CALENDAR_CODE fehlt"; exit 1; fi
