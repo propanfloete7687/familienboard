@@ -3,3 +3,7 @@ timetree.ics
 site/
 __pycache__/
 bring.json
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties

@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+}
+
+def runNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+
+android {
+    namespace 'de.burgold.familienboard'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'de.burgold.familienboard'
+        minSdk 24
+        targetSdk 35
+        versionCode runNumber
+        versionName "1.0.${runNumber}"
+        // Adresse des Boards – bei Bedarf hier ändern
+        buildConfigField "String", "BOARD_URL", '"https://propanfloete7687.github.io/familienboard/"'
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    // Fester Schlüssel, damit jede neue Version über die alte installiert werden kann.
+    // Nur für diese private App gedacht (Installation per APK, nicht im Play Store).
+    signingConfigs {
+        board {
+            storeFile file('familienboard.keystore')
+            storePassword 'familienboard'
+            keyAlias 'familienboard'
+            keyPassword 'familienboard'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.board
+        }
+        debug {
+            signingConfig signingConfigs.board
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
