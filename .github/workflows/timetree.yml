@@ -40,7 +40,11 @@ jobs:
         env:
           TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
           TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
-        run: timetree_exporter -c "${{ vars.TIMETREE_CALENDAR_CODE }}" -o timetree.ics
+          CAL_CODE: ${{ vars.TIMETREE_CALENDAR_CODE }}
+        run: |
+          if [ -z "$TIMETREE_EMAIL" ] || [ -z "$TIMETREE_PASSWORD" ]; then echo "::error::Secrets TIMETREE_EMAIL / TIMETREE_PASSWORD fehlen"; exit 1; fi
+          if [ -z "$CAL_CODE" ]; then echo "::error::Variable TIMETREE_CALENDAR_CODE fehlt"; exit 1; fi
+          python -m timetree_exporter -c "$CAL_CODE" -o timetree.ics < /dev/null
 
       - name: Aufbereiten und verschlüsseln
         env:
