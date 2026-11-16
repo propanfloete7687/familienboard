@@ -65,3 +65,18 @@ Nach dem Speichern einer Änderung auf GitHub wird das Board automatisch neu ver
 - **Bei langer Inaktivität** pausiert GitHub zeitgesteuerte Abläufe in Repos manchmal nach 60 Tagen. Du bekommst vorher eine Mail und kannst es mit einem Klick wieder aktivieren.
 - **Die Einkaufsliste** zeigt die offenen Artikel aus Bring!, dringende (in Bring! als „dringend“ markiert) stehen rot oben. Fällt der Bring!-Abruf aus, laufen die Termine trotzdem weiter.
 - **Nach dem Wechsel des `BOARD_KEY`** musst du ihn am Tablet unter „Einstellungen“ (unten rechts) neu eingeben.
+
+---
+
+## Android-App fürs Wand-Tablet (optional)
+
+Statt der Web-App kannst du eine kleine native App installieren. Sie zeigt dasselbe Board, aber:
+- immer im Vollbild, der Bildschirm bleibt an
+- die Zurück-Taste ist gesperrt
+- sie lässt sich als **Startbildschirm-App** einrichten und startet dann nach jedem Neustart von selbst
+
+**Download:** https://github.com/propanfloete7687/familienboard/releases/download/app/familienboard.apk
+
+Bei jeder Änderung im Ordner `android/` baut GitHub automatisch eine neue Version unter demselben Link. Neue Versionen lassen sich einfach über die alte installieren.
+
+**Menü:** Irgendwo auf dem Board **lange drücken**. Dort kannst du das Board neu laden, die Startbildschirm-App wechseln, die Android-Einstellungen öffnen oder das Board schließen.
