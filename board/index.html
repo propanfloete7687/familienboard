@@ -55,6 +55,8 @@
       <h2>Familienboard einrichten</h2>
       <p>Gib den Board-Schlüssel ein – dieselbe Passphrase, die du bei GitHub als <code>BOARD_KEY</code> hinterlegt hast. Er bleibt nur auf diesem Gerät gespeichert.</p>
       <input id="setup-key" type="password" placeholder="Board-Schlüssel" autocomplete="off">
+      <p class="small">Optional, nur auf dem Wand-Tablet: GitHub-Token, damit das Board den Abruf alle 20 Minuten selbst anstößt.</p>
+      <input id="setup-token" type="password" placeholder="GitHub-Token (github_pat_…)" autocomplete="off">
       <p id="setup-error" class="error" hidden></p>
       <div class="row">
         <button type="submit" class="primary">Speichern</button>

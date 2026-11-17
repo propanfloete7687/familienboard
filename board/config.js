@@ -1,5 +1,8 @@
 // Einstellungen für das Familienboard – hier anpassen.
 window.BOARD_CONFIG = {
+  // GitHub-Repo, in dem der Abruf läuft (für das Anstoßen per Token)
+  githubRepo: "propanfloete7687/familienboard",
+
   ort: "Eschweiler",
   lat: 50.8187,
   lon: 6.2633,

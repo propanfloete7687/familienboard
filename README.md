@@ -80,3 +80,15 @@ Statt der Web-App kannst du eine kleine native App installieren. Sie zeigt dasse
 Bei jeder Änderung im Ordner `android/` baut GitHub automatisch eine neue Version unter demselben Link. Neue Versionen lassen sich einfach über die alte installieren.
 
 **Menü:** Irgendwo auf dem Board **lange drücken**. Dort kannst du das Board neu laden, die Startbildschirm-App wechseln, die Android-Einstellungen öffnen oder das Board schließen.
+
+## Regelmäßig aktualisieren (Token auf dem Tablet)
+
+GitHub startet zeitgesteuerte Abläufe oft nur alle paar Stunden. Deshalb kann das Board den Abruf selbst anstoßen:
+
+1. Auf github.com: Profilbild → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
+   - Repository access: **Only select repositories** → `familienboard`
+   - Permissions → Repository permissions → **Actions: Read and write** (sonst nichts)
+   - Expiration: maximal 1 Jahr, danach einen neuen Token anlegen und eintragen
+2. Am Tablet unten rechts **Einstellungen** öffnen, den Token ins zweite Feld einfügen und **Speichern** tippen. Das Feld für den Board-Schlüssel kannst du leer lassen.
+
+Danach stößt das Board den Abruf an, sobald die Daten älter als 20 Minuten sind. Wer zwischendurch frische Daten will, tippt unten links auf die Statuszeile.

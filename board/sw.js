@@ -1,5 +1,5 @@
 // Hält das Board offline verfügbar. Daten und Wetter kommen immer frisch aus dem Netz.
-const CACHE = "familienboard-v1";
+const CACHE = "familienboard-v2";
 const SHELL = ["./", "index.html", "style.css", "app.js", "config.js", "manifest.webmanifest", "icons/icon.svg"];
 
 self.addEventListener("install", (e) => {

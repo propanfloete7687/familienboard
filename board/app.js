@@ -253,14 +253,67 @@ function showSetup(error) {
   $("setup").hidden = false;
   $("setup-error").hidden = !error;
   $("setup-error").textContent = error || "";
+  $("setup-key").placeholder = store.get("key") ? "Board-Schlüssel (gespeichert – leer lassen)" : "Board-Schlüssel";
+  $("setup-token").placeholder = store.get("ghToken") ? "GitHub-Token gespeichert – leer lassen, „-“ zum Löschen" : "GitHub-Token (github_pat_…)";
 }
-$("setup-form").addEventListener("submit", (e) => {
+$("setup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const v = $("setup-key").value;
-  if (v.length < 12) return showSetup("Der Schlüssel hat mindestens 12 Zeichen.");
-  store.set("key", v); store.del("demo");
-  $("setup").hidden = true; $("setup-key").value = "";
+  const tok = $("setup-token").value.trim();
+  if (v) {
+    if (v.length < 12) return showSetup("Der Schlüssel hat mindestens 12 Zeichen.");
+    store.set("key", v);
+  } else if (!store.get("key")) {
+    return showSetup("Bitte den Board-Schlüssel eingeben.");
+  }
+  if (tok === "-") store.del("ghToken");
+  else if (tok) {
+    const ok = await triggerSync(tok);
+    if (!ok) return showSetup("GitHub hat den Token abgelehnt. Er braucht Zugriff auf das Repo „familienboard“ mit „Actions: Read and write“.");
+    store.set("ghToken", tok);
+  }
+  store.del("demo");
+  $("setup").hidden = true; $("setup-key").value = ""; $("setup-token").value = "";
   loadData();
+});
+
+// ---------- Abruf bei GitHub selbst anstoßen (statt auf GitHubs Zeitplan zu warten) ----------
+const SYNC_EVERY_MIN = 20;
+let syncPending = false;
+
+async function triggerSync(token = store.get("ghToken")) {
+  if (!token) return false;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${CFG.githubRepo}/actions/workflows/timetree.yml/dispatches`, {
+      method: "POST",
+      headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json" },
+      body: JSON.stringify({ ref: "main" }),
+    });
+    if (res.status !== 204) return false;
+    store.set("lastSync", Date.now());
+    // Abruf + Veröffentlichung dauern ca. 1–2 Minuten, danach neu laden
+    syncPending = true;
+    setTimeout(() => { syncPending = false; loadData(); }, 100 * 1000);
+    setTimeout(loadData, 180 * 1000);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function maybeSync() {
+  if (!store.get("ghToken") || state.demo || syncPending) return;
+  const ageMin = state.updated ? (Date.now() - state.updated) / 60000 : Infinity;
+  const sinceLast = (Date.now() - (store.get("lastSync") || 0)) / 60000;
+  if (ageMin >= SYNC_EVERY_MIN && sinceLast >= SYNC_EVERY_MIN - 2) triggerSync();
+}
+setInterval(maybeSync, 60 * 1000);
+
+// Tippen auf die Statuszeile: sofort aktualisieren
+$("status-text").addEventListener("click", async () => {
+  if (!store.get("ghToken") || state.demo) return;
+  $("status-text").textContent = "Aktualisierung angestoßen …";
+  if (!(await triggerSync())) $("status-text").textContent = "Aktualisieren fehlgeschlagen – Token prüfen";
 });
 $("setup-demo").addEventListener("click", () => { store.set("demo", true); $("setup").hidden = true; useDemo(); });
 $("settings-btn").addEventListener("click", () => { store.del("demo"); showSetup(); });
