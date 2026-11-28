@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f1115">
+  <title>Familienboard</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="board">
+    <aside class="side">
+      <section class="clock">
+        <div id="time" class="time">--:--</div>
+        <div id="date" class="date"></div>
+      </section>
+
+      <section class="card weather" id="weather">
+        <div class="weather-now">
+          <span id="w-icon" class="w-icon">·</span>
+          <span id="w-temp" class="w-temp">–°</span>
+          <span id="w-text" class="w-text">Wetter lädt …</span>
+        </div>
+        <div id="w-days" class="w-days"></div>
+      </section>
+
+      <section class="card shopping">
+        <h2>Einkaufsliste <span id="shop-name" class="shop-name"></span></h2>
+        <ul id="shop-list"></ul>
+        <p id="shop-hint" class="shop-hint">Ändern in der Bring!-App</p>
+      </section>
+    </aside>
+
+    <section class="main">
+      <header class="today-head">
+        <h1>Heute</h1>
+        <span id="today-count" class="muted"></span>
+      </header>
+      <div id="today" class="today"></div>
+
+      <h2 class="upcoming-head">Die nächsten Tage</h2>
+      <div id="upcoming" class="upcoming"></div>
+    </section>
+  </main>
+
+  <footer class="status">
+    <span id="status-text">Lädt …</span>
+    <button id="settings-btn" class="link" type="button">Einstellungen</button>
+  </footer>
+
+  <div id="setup" class="overlay" hidden>
+    <form id="setup-form" class="dialog">
+      <h2>Familienboard einrichten</h2>
+      <p>Gib den Board-Schlüssel ein – dieselbe Passphrase, die du bei GitHub als <code>BOARD_KEY</code> hinterlegt hast. Er bleibt nur auf diesem Gerät gespeichert.</p>
+      <input id="setup-key" type="password" placeholder="Board-Schlüssel" autocomplete="off">
+      <p class="small">Optional, nur auf dem Wand-Tablet: GitHub-Token, damit das Board den Abruf alle 20 Minuten selbst anstößt.</p>
+      <input id="setup-token" type="password" placeholder="GitHub-Token (github_pat_…)" autocomplete="off">
+      <p id="setup-error" class="error" hidden></p>
+      <div class="row">
+        <button type="submit" class="primary">Speichern</button>
+        <button type="button" id="setup-demo">Demo ansehen</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
